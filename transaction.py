@@ -104,6 +104,8 @@ class Transaction:
         
         print(f"Outpus of this tx: {self.outs}")
         print("*"*100)
+        
+        return (balance-pay)
 
     def hashTx(self):
         byteTx = pickle.dumps(self)
