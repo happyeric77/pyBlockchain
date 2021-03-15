@@ -5,6 +5,7 @@ from flask import Flask, jsonify
 import transaction as tx
 import pickle
 
+
 class Block:
     def __init__(self, id: int, transaction: bytes, prevHash: int):
         self.index = id
@@ -94,38 +95,9 @@ class Blockchain:
         return self.txs
 
 
-def mindCoinBaseBlock(output, chain):
-    coin = tx.Transaction("coinbase", output)
-    byteCoin = pickle.dumps(coin)    
-    newBlock = Block(chain.getLastID_Hash()[0]+1 ,byteCoin, chain.getLastID_Hash()[1])
-    newBlock.mineBlock()
-    chain.addBlock(newBlock)
 
-def mindTransactionBlock(sender, output, chain):
-    trx = tx.Transaction(sender, output)
-    trx.updateInputs(chain)    
-    
-    byteTx = pickle.dumps(trx)    
-    newBlock = Block(chain.getLastID_Hash()[0]+1 ,byteTx, chain.getLastID_Hash()[1])
-    
-    newBlock.mineBlock()
-    chain.addBlock(newBlock)
 
-if __name__ == "__main__":
 
-    chain = Blockchain()
-
-    mindCoinBaseBlock({"Eric": 60}, chain)
-    mindTransactionBlock("Eric", {"Yuko": 30}, chain)
-    mindTransactionBlock("Eric", {"Yuko": 20}, chain)
-    mindTransactionBlock("Eric", {"Yuko": 5}, chain)
-    mindTransactionBlock("Yuko", {"Eric": 25}, chain)
-    mindTransactionBlock("Yuko", {"Eric": 10}, chain)
-
-    # chain.printBlocks()
-    # chain.is_valid()
-    
-    # chain.findUTXOs()
 
 
 

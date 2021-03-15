@@ -2,6 +2,7 @@ import blockchain
 import pickle
 import hashlib
 import json
+import random
 
 class Input:
     def __init__(self, sender: str, id):
@@ -19,9 +20,9 @@ class Transaction:
 
     def is_coinBase(self) -> bool:
         if self.sender == "coinbase":
-            input = Input("coinbaseInId", "coinbaseOut")
+            input = Input("coinbaseInId" , "coinbaseOut")
             self.inputs = [input]
-            self.id = "coinbaseTxId"
+            self.id = "coinbaseTxId"+str(random.randint(1,999))
             return True
         return False
         
