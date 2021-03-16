@@ -71,15 +71,28 @@ class Blockchain:
     def getLastID_Hash(self) -> (int, int):
         return self.blocks[-1].index, self.blocks[-1].hash
 
-    def printBlocks(self):
-        print("Total block count: "+ str(len(self.blocks)))
+    def printBlocks(self):        
+        blocksData = []
         for block in self.blocks:
-            print("block ID: " + str(block.index))
-            print("Previous Hash: " + str(block.prevHash))
-            print("Hash: " + str(block.hash))
-            print("Nonce: " + str(block.nonce))
-            print("Transactions: " + str(block.transaction))
-            print("="*50)
+            txData = pickle.loads(block.transaction)
+            blockData = {
+                "blockID": str(block.index),
+                "prevHash": str(block.prevHash),
+                "hash": str(block.hash),
+                "nonce": str(block.nonce),
+                "transactions": {
+                    "txid": txData.id,
+                    "sender": txData.sender,
+                    "outs": json.dumps(txData.outs),
+                    "inputs": [{"id": input.id, "out": input.out} for input in txData.inputs]
+                }
+            }            
+            blocksData.append(blockData)
+        blocksData = {
+            "bestHeight":len(blocksData),
+            "data": blocksData
+        }
+        return blocksData
         
     def is_valid(self):
         for block in self.blocks:

@@ -2,7 +2,6 @@ import transaction as tx
 import blockchain
 from flask import Flask, jsonify
 import pickle
-import json
 
 app = Flask(__name__)
 
@@ -26,7 +25,8 @@ def mindCoinBaseBlock(name, amount, chain=chain):
             "previous hash": newBlock.prevHash
         }
     }
-    return json.dumps(response)
+    jsonify(response)
+    return jsonify(response)
 
 @app.route("/transfer/<sender>/<to>/<amount>", methods = ["GET"])
 def mindTransactionBlock(sender, to, amount, chain=chain):
@@ -51,7 +51,31 @@ def mindTransactionBlock(sender, to, amount, chain=chain):
             "txid": trx.id
         }
     }
-    return json.dumps(response)
+    return jsonify(response)
+
+@app.route("/printBlocks/", methods = ["GET"])
+def printBlocks(chain=chain):
+    blocksData = chain.printBlocks()
+    return jsonify(blocksData)
+
+
+if __name__ == "__main__":        
+
+    # To fix the issue "AttributeError: 'Request' object has no attribute 'is_xhr'
+    app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+    """
+    The request.is_xhr property was deprecated since Werkzeug 0.13 and removed in Werkzeug 1.0.0. 
+    You will get this error when using Flask <= 0.12.4 and Werkzeug >=1.0.0 because Flask uses this property in the source before the 1.0.0 version. 
+    You can just upgrade Flask (>=1.0.0) to fix this issue
+    """ 
+
+    # Run Flask 
+    app.run(host="0.0.0.0", port=5000)
+    """
+    Equivalant as doing following step on cli
+    1. export FLASK_APP=main.py (Add FLASK_APP into env variable)
+    2. python -m flask run --host 0.0.0.0 (Flask default port is 5000)
+    """
     
 
 
